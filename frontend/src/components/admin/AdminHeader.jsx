@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Bell, Menu, User, Settings, LogOut } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 const AdminHeader = ({ onOpenSidebar, search, setSearch, title = "Dashboard" }) => {
   const [profileOpen, setProfileOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  const { logoutUser } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -18,9 +20,7 @@ const AdminHeader = ({ onOpenSidebar, search, setSearch, title = "Dashboard" }) 
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
+    logoutUser();
   };
 
   return (

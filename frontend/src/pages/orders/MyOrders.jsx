@@ -28,12 +28,9 @@ const MyOrders = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login", { state: { from: "/orders" } });
-      return;
-    }
+    if (!token) return;
     fetchOrders();
-  }, [navigate]);
+  }, []);
 
   const handleCancelOrder = async (orderId) => {
     try {

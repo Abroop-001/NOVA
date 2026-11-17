@@ -12,11 +12,11 @@ const GoogleIcon = () => (
   </svg>
 );
 
-// Module-level flag: ensures google.accounts.id.initialize() runs only once
+// Module-level state: ensures google.accounts.id.initialize() is called only once
 let gsiInitialized = false;
+let gsiClientId = null;
 
-// Module-level mutable ref for the credential callback so the latest
-// closure is always invoked regardless of which component instance initialized GSI.
+// Module-level ref to always delegate to the latest authentication callback
 const callbackRef = { current: null };
 
 const GoogleAuthButton = ({ onError, disabled }) => {
@@ -24,142 +24,169 @@ const GoogleAuthButton = ({ onError, disabled }) => {
   const location = useLocation();
   const { loginUser, closeAuthModal } = useAuth();
   const [loading, setLoading] = useState(false);
-  const hiddenBtnRef = useRef(null);
+  const [isRendered, setIsRendered] = useState(false);
+  const btnContainerRef = useRef(null);
   const isSubmittingRef = useRef(false);
 
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-  const handleCredentialResponse = useCallback(async (response) => {
-    if (isSubmittingRef.current) return;
-    if (!response?.credential) {
-      if (onError) onError("No credential received from Google.");
-      return;
-    }
-
-    try {
-      isSubmittingRef.current = true;
-      setLoading(true);
-
-      const res = await api.post("/auth/google", {
-        idToken: response.credential,
-      });
-
-      const { token, user } = res.data;
-      await loginUser(token, user);
-      closeAuthModal();
-
-      const role = user?.role;
-      if (role === "admin" || role === "superadmin") {
-        navigate("/admin");
-      } else if (location.pathname === "/login" || location.pathname === "/signup") {
-        navigate("/home");
+  const handleCredentialResponse = useCallback(
+    async (response) => {
+      if (isSubmittingRef.current) return;
+      if (!response?.credential) {
+        if (onError) onError("No credential received from Google.");
+        return;
       }
-    } catch (err) {
-      const msg = err.response?.data?.message || "Google authentication failed. Please try again.";
-      if (onError) onError(msg);
-    } finally {
-      setLoading(false);
-      isSubmittingRef.current = false;
-    }
-  }, [loginUser, closeAuthModal, navigate, location.pathname, onError]);
 
-  // Keep the module-level callback ref pointing to the latest closure
+      try {
+        isSubmittingRef.current = true;
+        setLoading(true);
+
+        const res = await api.post("/auth/google", {
+          idToken: response.credential,
+        });
+
+        const { token, user } = res.data;
+        await loginUser(token, user);
+        closeAuthModal();
+
+        const role = user?.role;
+        if (role === "admin" || role === "superadmin") {
+          navigate("/admin");
+        } else if (location.pathname === "/login" || location.pathname === "/signup") {
+          navigate("/home");
+        }
+      } catch (err) {
+        const msg =
+          err.response?.data?.message ||
+          "Google authentication failed. Please try again.";
+        if (onError) onError(msg);
+      } finally {
+        setLoading(false);
+        isSubmittingRef.current = false;
+      }
+    },
+    [loginUser, closeAuthModal, navigate, location.pathname, onError]
+  );
+
+  // Always keep callbackRef pointing to the freshest closure
   useEffect(() => {
     callbackRef.current = handleCredentialResponse;
   }, [handleCredentialResponse]);
 
+  // Initialize GIS once and render the button into this component instance
   useEffect(() => {
     if (!clientId || clientId === "your_google_client_id") return;
 
-    const initGoogle = () => {
-      if (!window.google?.accounts?.id) return;
+    let isMounted = true;
 
-      // Initialize only once globally
-      if (!gsiInitialized) {
+    const renderGoogleButton = () => {
+      if (!isMounted || !btnContainerRef.current || !window.google?.accounts?.id) return;
+
+      // 1. Initialize only once globally (or if client_id changed)
+      if (!gsiInitialized || gsiClientId !== clientId) {
         try {
           window.google.accounts.id.initialize({
             client_id: clientId,
             callback: (response) => {
-              // Delegate to the latest callback ref so it's never stale
-              if (callbackRef.current) callbackRef.current(response);
+              if (callbackRef.current) {
+                callbackRef.current(response);
+              }
             },
           });
           gsiInitialized = true;
+          gsiClientId = clientId;
         } catch (e) {
-          console.warn("GIS init error:", e);
+          console.warn("Google Sign-In initialization error:", e);
         }
       }
 
-      // Render the hidden button for this component instance
-      if (hiddenBtnRef.current) {
-        try {
-          window.google.accounts.id.renderButton(hiddenBtnRef.current, {
-            theme: "outline",
-            size: "large",
-            width: 368,
-          });
-        } catch (e) {
-          console.warn("GIS render error:", e);
-        }
+      // 2. Measure container width (Google supports 200px - 400px)
+      const containerWidth = btnContainerRef.current.clientWidth || 368;
+      const targetWidth = Math.min(400, Math.max(200, Math.floor(containerWidth)));
+
+      // 3. Clear container to avoid duplicate iframes on re-renders
+      btnContainerRef.current.innerHTML = "";
+
+      // 4. Render native Google button (handles clicks and popups directly)
+      try {
+        window.google.accounts.id.renderButton(btnContainerRef.current, {
+          type: "standard",
+          theme: "outline",
+          size: "large",
+          text: "continue_with",
+          shape: "rectangular",
+          logo_alignment: "center",
+          width: targetWidth,
+        });
+        if (isMounted) setIsRendered(true);
+      } catch (e) {
+        console.warn("Google button render error:", e);
       }
     };
 
+    // Check script readiness
     if (window.google?.accounts?.id) {
-      initGoogle();
+      // Use requestAnimationFrame to ensure DOM dimensions are ready (e.g. inside animated modal)
+      requestAnimationFrame(() => {
+        renderGoogleButton();
+      });
     } else {
       const timer = setInterval(() => {
         if (window.google?.accounts?.id) {
           clearInterval(timer);
-          initGoogle();
+          renderGoogleButton();
         }
-      }, 200);
-      return () => clearInterval(timer);
+      }, 150);
+      return () => {
+        isMounted = false;
+        clearInterval(timer);
+      };
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [clientId]);
 
-  const handleClick = () => {
-    if (!clientId || clientId === "your_google_client_id") {
-      if (onError) {
-        onError("Google Client ID is not configured. Please set VITE_GOOGLE_CLIENT_ID in .env.");
-      }
-      return;
-    }
-
-    if (window.google?.accounts?.id) {
-      window.google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          const btn = hiddenBtnRef.current?.querySelector("div[role=button]");
-          if (btn) btn.click();
-        }
-      });
-    }
-  };
+  if (!clientId || clientId === "your_google_client_id") {
+    return null;
+  }
 
   return (
     <div className="w-full">
       <div className="flex items-center gap-3 my-3.5">
         <div className="flex-1 h-px bg-[#E5E7EB]" />
-        <span className="text-[11px] font-medium uppercase tracking-wider text-[#9CA3AF]">OR</span>
+        <span className="text-[11px] font-medium uppercase tracking-wider text-[#9CA3AF]">
+          OR
+        </span>
         <div className="flex-1 h-px bg-[#E5E7EB]" />
       </div>
 
-      <div className="relative w-full overflow-hidden rounded-xl">
-        <button
-          type="button"
-          onClick={handleClick}
-          disabled={disabled || loading}
-          className="w-full h-11 flex items-center justify-center gap-2.5 rounded-xl border border-[#E5E7EB] bg-white text-sm font-medium text-[#111111] hover:bg-gray-50 transition cursor-pointer disabled:opacity-60"
-        >
-          <GoogleIcon />
-          <span>{loading ? "Signing in..." : "Continue with Google"}</span>
-        </button>
+      <div className="w-full flex justify-center items-center min-h-[44px]">
+        {loading ? (
+          <div className="w-full h-11 flex items-center justify-center gap-2.5 rounded-xl border border-[#E5E7EB] bg-white text-sm font-medium text-[#111111]">
+            <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+            <span>Signing in with Google...</span>
+          </div>
+        ) : (
+          <>
+            {/* Native Google Sign-In Button Container */}
+            <div
+              ref={btnContainerRef}
+              className={`w-full flex justify-center ${disabled ? "pointer-events-none opacity-50" : ""}`}
+              style={{ display: isRendered ? "flex" : "none" }}
+            />
 
-        {/* Hidden GIS iframe positioned directly over the button for direct click triggers */}
-        <div
-          ref={hiddenBtnRef}
-          className="absolute inset-0 z-10 opacity-0 pointer-events-auto cursor-pointer flex items-center justify-center overflow-hidden"
-          aria-hidden="true"
-        />
+            {/* Placeholder while Google Identity Services script loads */}
+            {!isRendered && (
+              <div className="w-full h-11 flex items-center justify-center gap-2.5 rounded-xl border border-[#E5E7EB] bg-white text-sm font-medium text-[#111111] animate-pulse">
+                <GoogleIcon />
+                <span>Continue with Google</span>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

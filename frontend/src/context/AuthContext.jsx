@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { mergeGuestCart } from "../services/cartService";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(() => {
     try {
       const stored = localStorage.getItem("user");
@@ -50,7 +52,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logoutUser = () => {
+  const logoutUser = (redirectTo = "/") => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
@@ -60,6 +62,9 @@ export const AuthProvider = ({ children }) => {
     setAuthData({ email: "", username: "", message: "", title: "" });
     setIsAuthModalOpen(false);
     window.dispatchEvent(new Event("storage"));
+    if (redirectTo) {
+      navigate(redirectTo, { replace: true });
+    }
   };
 
   const openAuthModal = (view = "login", data = {}) => {

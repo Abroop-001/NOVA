@@ -1,17 +1,17 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Package, MapPin, Heart, ShoppingBag, LogOut, ChevronRight } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 const ProfileActions = ({ onLogout }) => {
   const navigate = useNavigate();
+  const { logoutUser } = useAuth();
 
   const handleLogoutClick = () => {
     if (onLogout) {
       onLogout();
     } else {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      navigate("/login");
+      logoutUser();
     }
   };
 

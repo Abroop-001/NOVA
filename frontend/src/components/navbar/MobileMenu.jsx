@@ -5,13 +5,16 @@ import { useAuth } from "../../context/AuthContext";
 
 const MobileMenu = ({ isOpen, onClose, isLoggedIn, onLogout }) => {
   const navigate = useNavigate();
-  const { openAuthModal } = useAuth();
+  const { openAuthModal, logoutUser } = useAuth();
   if (!isOpen) return null;
 
   const handleLogout = () => {
-    onLogout();
     onClose();
-    navigate("/");
+    if (onLogout) {
+      onLogout();
+    } else {
+      logoutUser();
+    }
   };
 
   const handleOpenAuth = (view) => {

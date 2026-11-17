@@ -16,6 +16,8 @@ import MyProfile from "./pages/profile/MyProfile";
 import MyAddresses from "./pages/addresses/MyAddresses";
 import Wishlist from "./pages/wishlist/Wishlist";
 import MyOrders from "./pages/orders/MyOrders";
+import ProtectedRoute from "./components/ProtectedRoute";
+import NotFound from "./pages/NotFound";
 
 import AdminLayout from "./layouts/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -45,10 +47,31 @@ const App = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
-        <Route path="/profile" element={<MyProfile />} />
-        <Route path="/addresses" element={<MyAddresses />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <MyProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/addresses"
+          element={
+            <ProtectedRoute>
+              <MyAddresses />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/orders" element={<MyOrders />} />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <MyOrders />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Admin Panel Nested Routes */}
         <Route path="/admin" element={<AdminLayout />}>
@@ -64,6 +87,7 @@ const App = () => {
         </Route>
 
         <Route path="/" element={<Home />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

@@ -13,6 +13,7 @@ import {
   LogOut,
   X,
 } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 const NAV_ITEMS = [
   { label: "Dashboard", path: "/admin", icon: LayoutDashboard, end: true },
@@ -28,11 +29,10 @@ const NAV_ITEMS = [
 
 const AdminSidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
+  const { logoutUser } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
+    logoutUser();
   };
 
   return (

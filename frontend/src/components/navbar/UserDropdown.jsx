@@ -15,7 +15,7 @@ import { useAuth } from "../../context/AuthContext";
 const UserDropdown = ({ isOpen, onClose, isLoggedIn, onLogout }) => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-  const { openAuthModal } = useAuth();
+  const { openAuthModal, logoutUser } = useAuth();
 
   let userRole = null;
   try {
@@ -41,9 +41,12 @@ const UserDropdown = ({ isOpen, onClose, isLoggedIn, onLogout }) => {
   if (!isOpen) return null;
 
   const handleLogout = () => {
-    onLogout();
     onClose();
-    navigate("/");
+    if (onLogout) {
+      onLogout();
+    } else {
+      logoutUser();
+    }
   };
 
   const handleOpenAuth = (view) => {

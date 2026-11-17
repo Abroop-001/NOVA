@@ -6,19 +6,18 @@ import ProfileHeader from "../../components/profile/ProfileHeader";
 import ProfileForm from "../../components/profile/ProfileForm";
 import ProfileActions from "../../components/profile/ProfileActions";
 import { getProfile, updateProfile } from "../../services/profileService";
+import { useAuth } from "../../context/AuthContext";
 
 const MyProfile = () => {
   const navigate = useNavigate();
+  const { logoutUser } = useAuth();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login", { state: { from: "/profile" } });
-      return;
-    }
+    if (!token) return;
 
     const loadProfile = async () => {
       try {
@@ -60,9 +59,7 @@ const MyProfile = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
+    logoutUser();
   };
 
   return (

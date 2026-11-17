@@ -39,12 +39,9 @@ const MyAddresses = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login", { state: { from: "/addresses" } });
-      return;
-    }
+    if (!token) return;
     fetchAddresses();
-  }, [navigate, fetchAddresses]);
+  }, [fetchAddresses]);
 
   const handleFormSubmit = async (formData) => {
     setSubmitting(true);
