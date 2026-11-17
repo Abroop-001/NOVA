@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../api";
 import { useAuth } from "../../context/AuthContext";
@@ -12,6 +12,13 @@ const GoogleIcon = () => (
   </svg>
 );
 
+// Module-level flag: ensures google.accounts.id.initialize() runs only once
+let gsiInitialized = false;
+
+// Module-level mutable ref for the credential callback so the latest
+// closure is always invoked regardless of which component instance initialized GSI.
+const callbackRef = { current: null };
+
 const GoogleAuthButton = ({ onError, disabled }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,7 +29,7 @@ const GoogleAuthButton = ({ onError, disabled }) => {
 
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-  const handleCredentialResponse = async (response) => {
+  const handleCredentialResponse = useCallback(async (response) => {
     if (isSubmittingRef.current) return;
     if (!response?.credential) {
       if (onError) onError("No credential received from Google.");
@@ -54,26 +61,46 @@ const GoogleAuthButton = ({ onError, disabled }) => {
       setLoading(false);
       isSubmittingRef.current = false;
     }
-  };
+  }, [loginUser, closeAuthModal, navigate, location.pathname, onError]);
+
+  // Keep the module-level callback ref pointing to the latest closure
+  useEffect(() => {
+    callbackRef.current = handleCredentialResponse;
+  }, [handleCredentialResponse]);
 
   useEffect(() => {
     if (!clientId || clientId === "your_google_client_id") return;
 
     const initGoogle = () => {
-      if (!window.google?.accounts?.id || !hiddenBtnRef.current) return;
-      try {
-        window.google.accounts.id.initialize({
-          client_id: clientId,
-          callback: handleCredentialResponse,
-        });
+      if (!window.google?.accounts?.id) return;
 
-        window.google.accounts.id.renderButton(hiddenBtnRef.current, {
-          theme: "outline",
-          size: "large",
-          width: 368,
-        });
-      } catch (e) {
-        console.warn("GIS render error:", e);
+      // Initialize only once globally
+      if (!gsiInitialized) {
+        try {
+          window.google.accounts.id.initialize({
+            client_id: clientId,
+            callback: (response) => {
+              // Delegate to the latest callback ref so it's never stale
+              if (callbackRef.current) callbackRef.current(response);
+            },
+          });
+          gsiInitialized = true;
+        } catch (e) {
+          console.warn("GIS init error:", e);
+        }
+      }
+
+      // Render the hidden button for this component instance
+      if (hiddenBtnRef.current) {
+        try {
+          window.google.accounts.id.renderButton(hiddenBtnRef.current, {
+            theme: "outline",
+            size: "large",
+            width: 368,
+          });
+        } catch (e) {
+          console.warn("GIS render error:", e);
+        }
       }
     };
 
