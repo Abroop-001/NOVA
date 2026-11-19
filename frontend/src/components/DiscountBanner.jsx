@@ -8,6 +8,8 @@ return ( <section className="relative w-full"> <div className="relative h-110 md
     <img
       src="/discount-shoe.png"
       alt="Puma sneakers"
+      loading="lazy"
+      decoding="async"
       className="absolute inset-0 w-full h-full object-cover object-center"
     />
 

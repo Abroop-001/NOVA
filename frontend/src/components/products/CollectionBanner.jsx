@@ -15,6 +15,9 @@ const CollectionBanner = ({
         <img
           src={bannerImage}
           alt={heading}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="block w-full h-[300px] sm:h-[320px] lg:h-[550px] object-cover"
         />
       </picture>

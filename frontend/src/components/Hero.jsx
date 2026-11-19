@@ -13,6 +13,9 @@ const Hero = () => {
         <img
           src="/hero-banner.png"
           alt="NOVA premium sneaker collection"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover"
         />
       </picture>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Trash2, ShoppingBag, Check } from "lucide-react";
+import { optimizeCloudinaryUrl, getCloudinarySrcSet } from "../../utils/imageOptimization";
 
 const WishlistItem = ({ product, onRemove, onAddToCart }) => {
   const [selectedSize, setSelectedSize] = useState(null);
@@ -46,8 +47,12 @@ const WishlistItem = ({ product, onRemove, onAddToCart }) => {
         )}
         <Link to={`/product/${prodId}`} className="w-full h-full flex items-center justify-center">
           <img
-            src={image}
+            src={optimizeCloudinaryUrl(image, { width: 600 })}
+            srcSet={getCloudinarySrcSet(image, [360, 600, 800])}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 340px"
             alt={product.name}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-contain scale-[1.46] sm:scale-100 group-hover:scale-[1.52] sm:group-hover:scale-105 transition-transform duration-500"
           />
         </Link>

@@ -29,6 +29,8 @@ const Categories = () => {
             <img
               src="/nike.png"
               alt="Nike sneakers"
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
             />
           </div>
@@ -45,6 +47,8 @@ const Categories = () => {
             <img
               src="/adidas.png"
               alt="Adidas sneakers"
+              loading="lazy"
+              decoding="async"
               className="w-full h-full  object-cover translate-y-1 group-hover:scale-105 transition duration-500"
             />
           </div>
@@ -61,6 +65,8 @@ const Categories = () => {
             <img
               src="/puma-shoe.png"
               alt="Puma sneakers"
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
             />
           </div>

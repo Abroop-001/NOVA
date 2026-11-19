@@ -1,3 +1,5 @@
+import { optimizeCloudinaryUrl } from "../../utils/imageOptimization";
+
 const CheckoutItem = ({ item }) => {
   const product = item.product;
   if (!product) return null;
@@ -16,8 +18,10 @@ const CheckoutItem = ({ item }) => {
       {/* Thumbnail */}
       <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-[#F5F5F2] flex items-center justify-center shrink-0 overflow-hidden">
         <img
-          src={image}
+          src={optimizeCloudinaryUrl(image, { width: 180 })}
           alt={product.name}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-contain p-1.5"
         />
       </div>

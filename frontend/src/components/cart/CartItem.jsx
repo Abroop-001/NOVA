@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Plus, Minus, Trash2 } from "lucide-react";
+import { optimizeCloudinaryUrl } from "../../utils/imageOptimization";
 
 const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
   if (!item || !item.product) return null;
@@ -35,8 +36,10 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
           className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl bg-[#F5F5F2] shrink-0 p-1.5 sm:p-3 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-102"
         >
           <img
-            src={displayImage}
+            src={optimizeCloudinaryUrl(displayImage, { width: 240 })}
             alt={product.name}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-contain scale-[1.12] sm:scale-100 mix-blend-multiply drop-shadow-xs"
           />
         </Link>

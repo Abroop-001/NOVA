@@ -3,8 +3,9 @@ import { ShoppingCart, Check, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { addToCart } from "../../services/cartService";
 import SizePickerPopup from "./SizePickerPopup";
+import { optimizeCloudinaryUrl, getCloudinarySrcSet } from "../../utils/imageOptimization";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, priority = false }) => {
   if (!product) return null;
 
   const productId = product._id || product.id;
@@ -18,6 +19,9 @@ const ProductCard = ({ product }) => {
     ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
     : 0;
   const hasSizes = product.sizes && product.sizes.length > 0;
+
+  const optimizedImage = optimizeCloudinaryUrl(displayImage, { width: 600 });
+  const srcSet = getCloudinarySrcSet(displayImage, [360, 600, 800]);
 
   const [showSizePicker, setShowSizePicker] = useState(false);
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
@@ -70,9 +74,13 @@ const ProductCard = ({ product }) => {
           </span>
         )}
         <img
-          src={displayImage}
+          src={optimizedImage}
+          srcSet={srcSet}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 340px"
           alt={product.name}
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "low"}
+          decoding="async"
           className="w-full h-full object-contain scale-[1.50] sm:scale-[1.15] mix-blend-multiply group-hover:scale-[1.56] sm:group-hover:scale-[1.22] transition duration-500"
         />
       </Link>
