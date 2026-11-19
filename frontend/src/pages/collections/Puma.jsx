@@ -15,7 +15,8 @@ const PUMA_CONFIG = {
   heading: "PUMA COLLECTION",
   subtitle:
     "Where sport meets street style. Explore iconic Puma silhouettes, innovative comfort, and bold designs crafted for everyday performance.",
-  bannerImage: "/puma.png",
+ bannerImage: "/pumabanner.png",
+  mobileBannerImage: "/pumabanner1.png",
   tag: "Official Puma Showcase",
 };
 
@@ -92,7 +93,7 @@ const Puma = () => {
         />
       </section>
 
-      <section className="bg-[#F7F7F4] px-4 sm:px-8 lg:px-16 py-8 sm:py-12 lg:py-16 flex-1">
+      <section className=" px-4 sm:px-8 lg:px-16 py-8 sm:py-12 lg:py-16 flex-1">
         <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-4">
           <div>
             <p className="text-xs sm:text-sm uppercase tracking-widest text-[#555555] mb-1 sm:mb-2 font-medium">

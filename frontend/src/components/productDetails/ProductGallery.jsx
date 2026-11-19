@@ -13,7 +13,7 @@ const ProductGallery = ({
   return (
     <section className="lg:col-span-7 flex flex-col gap-4">
       {/* Main Primary Sneaker Stage */}
-      <div className="relative h-100 sm:h-125 lg:h-145 rounded-2xl bg-[#F5F5F2] overflow-hidden flex items-center justify-center p-8 sm:p-14 group">
+      <div className="relative h-80 sm:h-125 lg:h-145 rounded-2xl bg-[#F5F5F2] overflow-hidden flex items-center justify-center p-4 sm:p-8 lg:p-8 group">
         {/* Sale Badge */}
         {hasDiscount && (
           <span className="absolute top-4 left-4 z-10 bg-[#171717] text-white text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-xs">
@@ -32,7 +32,7 @@ const ProductGallery = ({
         <img
           src={activeImage}
           alt={productName}
-          className="w-full h-full object-contain mix-blend-multiply drop-shadow-xl transition-all duration-500 scale-[1.08] group-hover:scale-[1.15]"
+          className="w-full h-full object-contain mix-blend-multiply drop-shadow-xl transition-all duration-500 scale-[1.24] sm:scale-[1.18] lg:scale-[1.45] group-hover:scale-[1.30] sm:group-hover:scale-[1.24] lg:group-hover:scale-[1.52]"
         />
       </div>
 

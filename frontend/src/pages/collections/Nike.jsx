@@ -14,7 +14,8 @@ const NIKE_CONFIG = {
   heading: "NIKE COLLECTION",
   subtitle:
     "Engineered for excellence and legendary street culture. Explore iconic Air Max, coveted Dunks, and cutting-edge performance silhouettes built to elevate every stride.",
-  bannerImage: "/nike.png",
+    bannerImage: "/nike-banner.png",
+  mobileBannerImage: "/nike-banner1.png",
   tag: "Official Nike Showcase",
 };
 
@@ -48,13 +49,13 @@ const Nike = () => {
       {/* 1. Navigation */}
       <Navbar />
 
-      {/* 2. Collection Banner */}
-      <CollectionBanner
-        heading={NIKE_CONFIG.heading}
-        subtitle={NIKE_CONFIG.subtitle}
-        bannerImage={NIKE_CONFIG.bannerImage}
-        tag={NIKE_CONFIG.tag}
-      />
+     <CollectionBanner
+  heading={NIKE_CONFIG.heading}
+  subtitle={NIKE_CONFIG.subtitle}
+  bannerImage={NIKE_CONFIG.bannerImage}
+  mobileBannerImage={NIKE_CONFIG.mobileBannerImage}
+  tag={NIKE_CONFIG.tag}
+/>
 
       {/* 3. Filter & Sort Bar */}
       <section className="bg-white border-b border-[#EAEAEA] sticky top-20 z-30 shadow-xs">
@@ -99,7 +100,7 @@ const Nike = () => {
       </section>
 
       {/* 4. Products Grid Section */}
-      <section className="bg-[#F7F7F4] px-4 sm:px-8 lg:px-16 py-8 sm:py-12 lg:py-16 flex-1">
+      <section className=" px-4 sm:px-8 lg:px-16 py-8 sm:py-12 lg:py-16 flex-1">
         {/* Section Heading & Product Count */}
         <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-4">
           <div>

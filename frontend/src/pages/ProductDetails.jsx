@@ -187,7 +187,7 @@ const ProductDetails = () => {
           <div className="h-4 bg-[#E0E0DC] rounded-sm w-48 mb-8 animate-pulse" />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
             <div className="lg:col-span-7">
-              <div className="h-100 sm:h-130 rounded-2xl bg-[#F5F5F2] animate-pulse" />
+              <div className="h-80 sm:h-130 rounded-2xl bg-[#F5F5F2] animate-pulse" />
             </div>
             <div className="lg:col-span-5 space-y-5">
               <div className="h-4 bg-[#E0E0DC] rounded-sm w-24 animate-pulse" />

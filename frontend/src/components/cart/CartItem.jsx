@@ -32,12 +32,12 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
         {/* Sneaker Thumbnail with #E8E9E6 background */}
         <Link
           to={`/product/${productId}`}
-          className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl bg-[#F5F5F2] shrink-0 p-3 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-102"
+          className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl bg-[#F5F5F2] shrink-0 p-1.5 sm:p-3 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-102"
         >
           <img
             src={displayImage}
             alt={product.name}
-            className="w-full h-full object-contain mix-blend-multiply drop-shadow-xs"
+            className="w-full h-full object-contain scale-[1.12] sm:scale-100 mix-blend-multiply drop-shadow-xs"
           />
         </Link>
 

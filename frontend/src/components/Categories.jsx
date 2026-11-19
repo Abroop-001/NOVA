@@ -45,7 +45,7 @@ const Categories = () => {
             <img
               src="/adidas.png"
               alt="Adidas sneakers"
-              className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+              className="w-full h-full  object-cover translate-y-1 group-hover:scale-105 transition duration-500"
             />
           </div>
 

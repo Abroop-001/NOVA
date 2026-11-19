@@ -38,12 +38,17 @@ const WishlistItem = ({ product, onRemove, onAddToCart }) => {
   return (
     <div className="group relative flex flex-col justify-between border border-[#EAEAEA] rounded-2xl bg-white overflow-hidden transition-all duration-300 hover:border-[#171717] hover:shadow-sm">
       {/* Top Image Container */}
-      <div className="relative w-full aspect-square bg-[#F5F5F2] p-6 flex items-center justify-center overflow-hidden">
+      <div className="relative w-full aspect-square bg-[#F5F5F2] p-2 sm:p-6 flex items-center justify-center overflow-hidden">
+        {hasDiscount && (
+          <span className="absolute top-3 left-3 z-10 bg-[#171717] text-white text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">
+            {Math.round(((originalPrice - discountPrice) / originalPrice) * 100)}% OFF
+          </span>
+        )}
         <Link to={`/product/${prodId}`} className="w-full h-full flex items-center justify-center">
           <img
             src={image}
             alt={product.name}
-            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-contain scale-[1.46] sm:scale-100 group-hover:scale-[1.52] sm:group-hover:scale-105 transition-transform duration-500"
           />
         </Link>
         <button

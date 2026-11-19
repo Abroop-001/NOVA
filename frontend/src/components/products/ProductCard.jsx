@@ -14,6 +14,9 @@ const ProductCard = ({ product }) => {
     "/hero-shoe.png";
   const hasDiscount =
     product.discountPrice != null && product.discountPrice < product.price;
+  const discountPercent = hasDiscount
+    ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
+    : 0;
   const hasSizes = product.sizes && product.sizes.length > 0;
 
   const [showSizePicker, setShowSizePicker] = useState(false);
@@ -50,15 +53,15 @@ const ProductCard = ({ product }) => {
     );
 
   return (
-    <div className="group flex flex-col justify-between">
+    <div className="group flex flex-col justify-between w-full max-w-[340px] sm:max-w-none mx-auto">
       {/* Product Image */}
       <Link
         to={`/product/${productId}`}
-        className="relative h-64 sm:h-72 bg-[#F5F5F2] rounded-xl overflow-hidden flex items-center justify-center p-4 block"
+        className="relative h-60 sm:h-72 bg-[#F5F5F2] rounded-xl overflow-hidden flex items-center justify-center p-2 sm:p-4 block"
       >
         {hasDiscount && (
           <span className="absolute top-3 left-3 z-10 bg-[#171717] text-white text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">
-            Sale
+            {discountPercent}% OFF
           </span>
         )}
         {(product.brand || product.category) && (
@@ -70,7 +73,7 @@ const ProductCard = ({ product }) => {
           src={displayImage}
           alt={product.name}
           loading="lazy"
-          className="w-full h-full object-contain scale-[1.15] mix-blend-multiply group-hover:scale-[1.22] transition duration-500"
+          className="w-full h-full object-contain scale-[1.50] sm:scale-[1.15] mix-blend-multiply group-hover:scale-[1.56] sm:group-hover:scale-[1.22] transition duration-500"
         />
       </Link>
 

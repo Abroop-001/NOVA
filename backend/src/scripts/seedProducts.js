@@ -213,7 +213,7 @@ const testProducts = [
     description:
       "The RS-X is back. The future-retro silhouette of this sneaker returns with a progressive aesthetic and angular details, complete with nubuck and suede overlays.",
     price: 8999,
-    discountPrice: 6999,
+    discountPrice: 4500,
     sizes: [7, 8, 9, 10, 11],
     colors: ["Puma White", "Feather Grey"],
     stock: 20,
@@ -229,7 +229,7 @@ const testProducts = [
     description:
       "The Suede hit the scene in 1968 and has been changing the game ever since. Worn by icons of every generation, it stays classic forever.",
     price: 6999,
-    discountPrice: 5499,
+    discountPrice: 3500,
     sizes: [6, 7, 8, 9, 10, 11],
     colors: ["Puma Black", "Puma White"],
     stock: 32,
@@ -245,7 +245,7 @@ const testProducts = [
     description:
       "Straight from the archives, this terrace legend returns with its signature T-toe construction and classic gum rubber sole.",
     price: 7999,
-    discountPrice: null,
+    discountPrice: 4000,
     sizes: [7, 8, 9, 10],
     colors: ["Alpine Snow", "Green Gum"],
     stock: 16,
@@ -261,7 +261,7 @@ const testProducts = [
     description:
       "Make every mile count. Maximum cushioning and peak performance with Nitro Elite foam and a redesigned PWRPLATE for effortless propulsion.",
     price: 13999,
-    discountPrice: 11999,
+    discountPrice: 7000,
     sizes: [7, 8, 9, 10, 11],
     colors: ["Fireglow", "Puma Black"],
     stock: 11,
@@ -277,7 +277,7 @@ const testProducts = [
     description:
       "Back in 1987, the Puma Slipstream entered the scene as a high-flying, slam-dunking court shoe. Now it returns reimagined for modern streetwear.",
     price: 8499,
-    discountPrice: 6799,
+    discountPrice: 4250,
     sizes: [8, 9, 10, 11],
     colors: ["Puma White", "Intense Red"],
     stock: 15,
@@ -293,7 +293,7 @@ const testProducts = [
     description:
       "Named after basketball legend Walt 'Clyde' Frazier, the Clyde embodies fashion, culture, and heritage with clean full-suede execution.",
     price: 7499,
-    discountPrice: null,
+    discountPrice: 3750,
     sizes: [7, 8, 9, 10],
     colors: ["Puma Navy", "Puma White"],
     stock: 24,

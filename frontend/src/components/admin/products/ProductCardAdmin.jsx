@@ -15,11 +15,11 @@ const ProductCardAdmin = ({ product, onEdit, onDelete, isDeleting }) => {
   return (
     <div className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden shadow-xs hover:border-gray-400 transition-all flex flex-col justify-between">
       {/* Thumbnail Container */}
-      <div className="relative aspect-square bg-[#F5F5F2] p-6 flex items-center justify-center">
+      <div className="relative aspect-square bg-[#F5F5F2] p-3 sm:p-6 flex items-center justify-center overflow-hidden">
         <img
           src={image}
           alt={product.name}
-          className="w-full h-full object-contain"
+          className="w-full h-full object-contain scale-[1.18] sm:scale-100 transition-transform duration-300"
         />
 
         {product.isFeatured && (

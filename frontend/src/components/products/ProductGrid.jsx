@@ -15,8 +15,8 @@ const ProductGrid = ({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6">
         {[...Array(8)].map((_, i) => (
-          <div key={i} className="animate-pulse">
-            <div className="h-64 sm:h-72 bg-[#F5F5F2] rounded-xl mb-4" />
+          <div key={i} className="animate-pulse w-full max-w-[340px] sm:max-w-none mx-auto">
+            <div className="h-60 sm:h-72 bg-[#F5F5F2] rounded-xl mb-4" />
             <div className="h-4 bg-[#E0E0DC] rounded-sm w-3/4 mb-2" />
             <div className="h-4 bg-[#E0E0DC] rounded-sm w-1/3" />
           </div>
