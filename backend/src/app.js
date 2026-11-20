@@ -21,6 +21,20 @@ const app = express();
 
 connectDB();
 
+// ── Keep-alive self-ping to prevent Render free-tier cold starts ──
+// Pings the health endpoint every 14 minutes so the dyno never sleeps.
+if (process.env.RENDER_EXTERNAL_URL || process.env.KEEP_ALIVE === "true") {
+  const KEEP_ALIVE_INTERVAL = 14 * 60 * 1000; // 14 minutes
+  const pingUrl =
+    (process.env.RENDER_EXTERNAL_URL || "").replace(/\/$/, "") + "/api/health";
+  setInterval(() => {
+    const mod = pingUrl.startsWith("https") ? require("https") : require("http");
+    mod
+      .get(pingUrl, (res) => res.resume())
+      .on("error", () => {});
+  }, KEEP_ALIVE_INTERVAL);
+}
+
 // Dynamic CORS origins: local dev defaults + environment-configured production URLs
 const parseAllowedOrigins = () => {
     const defaults = ["http://localhost:5173", "http://localhost:3000"];
