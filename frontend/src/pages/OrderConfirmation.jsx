@@ -4,6 +4,7 @@ import { CheckCircle, Package, ArrowRight, AlertCircle } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getOrderDetails } from "../services/checkoutService";
+import { trackPurchase } from "../utils/analytics";
 
 const OrderConfirmation = () => {
   const { orderId } = useParams();
@@ -18,6 +19,7 @@ const OrderConfirmation = () => {
         const data = await getOrderDetails(orderId);
         if (data.success && data.order) {
           setOrder(data.order);
+          trackPurchase(data.order);
         } else {
           setError("Order not found");
         }

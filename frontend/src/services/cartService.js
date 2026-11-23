@@ -1,4 +1,5 @@
 import api from "../api";
+import { trackAddToCart } from "../utils/analytics";
 
 const GUEST_CART_KEY = "nova_guest_cart";
 
@@ -70,6 +71,13 @@ export const getCart = async () => {
 export const addToCart = async (product, size, quantity = 1, color = "") => {
   const token = localStorage.getItem("token");
   const productId = product._id || product.id;
+
+  // Track product added to cart in GA4
+  try {
+    trackAddToCart(product, size, quantity, color);
+  } catch (err) {
+    console.warn("Analytics add_to_cart error:", err);
+  }
 
   if (token) {
     const response = await api.post("/cart/add", {

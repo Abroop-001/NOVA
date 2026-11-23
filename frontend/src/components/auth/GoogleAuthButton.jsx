@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../api";
 import { useAuth } from "../../context/AuthContext";
+import { trackSignUp } from "../../utils/analytics";
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" className="shrink-0" aria-hidden="true">
@@ -22,7 +23,7 @@ const callbackRef = { current: null };
 const GoogleAuthButton = ({ onError, disabled }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { loginUser, closeAuthModal } = useAuth();
+  const { loginUser, closeAuthModal, authModalView } = useAuth();
   const [loading, setLoading] = useState(false);
   const [isRendered, setIsRendered] = useState(false);
   const btnContainerRef = useRef(null);
@@ -48,6 +49,11 @@ const GoogleAuthButton = ({ onError, disabled }) => {
 
         const { token, user } = res.data;
         await loginUser(token, user);
+
+        if (location.pathname === "/signup" || authModalView === "signup") {
+          trackSignUp("google");
+        }
+
         closeAuthModal();
 
         const role = user?.role;

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import api from "../../api";
 import { useAuth } from "../../context/AuthContext";
+import { trackSignUp } from "../../utils/analytics";
 
 const OtpView = () => {
   const { authData, loginUser, setAuthModalView, setAuthData } = useAuth();
@@ -74,6 +75,7 @@ const OtpView = () => {
       setLoading(true);
       const res = await api.post("/auth/verify-email", { email, otp: code });
       if (res.data.token) await loginUser(res.data.token, res.data.user);
+      trackSignUp("email");
       setAuthData({ title: "Account Created Successfully!", message: "Welcome to NOVA. Your account is ready." });
       setAuthModalView("success");
     } catch (err) {

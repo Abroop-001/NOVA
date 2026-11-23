@@ -1,4 +1,6 @@
-import { Routes, Route } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { trackPageView } from "./utils/analytics";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import VerifyEmail from "./pages/VerifyEmail";
@@ -31,6 +33,17 @@ import AdminPromotions from "./pages/admin/AdminPromotions";
 import AdminSettings from "./pages/admin/AdminSettings";
 
 const App = () => {
+  const location = useLocation();
+  const lastTrackedPathRef = useRef(null);
+
+  useEffect(() => {
+    const currentPath = location.pathname + location.search;
+    if (lastTrackedPathRef.current !== currentPath) {
+      lastTrackedPathRef.current = currentPath;
+      trackPageView(currentPath);
+    }
+  }, [location.pathname, location.search]);
+
   return (
     <>
       <AuthModal />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, ShoppingBag } from "lucide-react";
 import Navbar from "../components/Navbar";
@@ -8,6 +8,7 @@ import OrderSummary from "../components/checkout/OrderSummary";
 import useCheckout from "../hooks/useCheckout";
 import useRazorpayCheckout from "../hooks/useRazorpayCheckout";
 import { useAuth } from "../context/AuthContext";
+import { trackBeginCheckout } from "../utils/analytics";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -23,6 +24,15 @@ const Checkout = () => {
     setSelectedAddressId, contact, setContact, addAddress, subtotal,
     total, discount, itemCount, placing, orderError, setOrderError, placeOrder,
   } = useCheckout();
+
+  const checkoutTrackedRef = useRef(false);
+
+  useEffect(() => {
+    if (!cartLoading && cartItems.length > 0 && !checkoutTrackedRef.current) {
+      checkoutTrackedRef.current = true;
+      trackBeginCheckout(cartItems, total);
+    }
+  }, [cartLoading, cartItems, total]);
 
   const { isProcessing, startPayment } = useRazorpayCheckout({
     contact,
